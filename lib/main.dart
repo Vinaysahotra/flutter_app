@@ -1,105 +1,71 @@
 
+import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/news.dart';
-void main() =>runApp(MaterialApp(
-  home:Quotelist()
+import 'package:flutter/services.dart';
+import 'package:flutter_app/pages/login.dart';
+import 'package:flutter_app/pages/searchrecipes.dart';
+import 'package:flutter_app/pages/shoppinglist.dart';
+import 'package:lottie/lottie.dart';
 
-));
-class home extends StatelessWidget {
+import 'pages/calorieswise.dart';
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      routes:{
+          "/":(context)=>splash(),
+        "/login": (context)=>login(),
+        "/calories" :(context)=>calories(),
+        "/recipes":(context)=>recipes(),
+        "/search": (context)=>recipes(),
+        "/cart": (context)=>shoppinglist()
+
+      }
+
+
+  ));
+}
+class splash extends StatefulWidget {
+  const splash({Key key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return  Scaffold(
-      
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("first App"),
-        backgroundColor: Colors.deepPurple,
-      ),
-      
-      body: Center(
-        child:Image.asset('lib/assets/shiv.jpg')
+  _splashState createState() => _splashState();
+}
 
-
-      ),
-
-
-      floatingActionButton: FloatingActionButton(
-        child: Text("Click"),
-        backgroundColor: Colors.deepPurple,
-      ),
-    );
+class _splashState extends State<splash> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Timer(
+        Duration(seconds: 5),
+            () {if( FirebaseAuth.instance.currentUser==null)Navigator.of(context).pushReplacementNamed("/login");
+        else
+              Navigator.of(context).pushReplacementNamed("/search");
+        });
   }
-}
-
-class Quotelist extends StatefulWidget {
-  @override
-  _QuotelistState createState() => _QuotelistState();
-}
-
-class _QuotelistState extends State<Quotelist> {
-  List <news>newslist=[
-    news(description: "redmi lauched",author:"vinay"),
-    news(description: "realme lauched", author:"sanchit"),
-    news(description: "poco lauched", author: "yatin"),
-
-
-  ];
-Widget Newsextract(newx){
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Card(
-      elevation: 10.0,
-      margin: EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(Icons.new_releases_rounded,
-          size: 30.0,
-          color: Colors.deepPurple,),
-          Text(
-            newx.description,
-           style: TextStyle(
-             letterSpacing: 2.0,
-             fontSize: 18.0,
-             color: Colors.grey
-
-           ),
-          ),
-          Text(
-            newx.author,
-            style: TextStyle(
-                letterSpacing: 2.0,
-                fontSize: 18.0,
-                color: Colors.grey
-
-            ),
-          ),
-        ],
-      ),
-      borderOnForeground: true,
-    ),
-  );
-}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      body:ListView(
+        children: [
+          SizedBox(height: 90,),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Lottie.asset("lib/assets/food-loading.json"),
+          ),
+          SizedBox(height: 20,),
 
-        appBar: AppBar(
-        centerTitle: true,
-        title: Text("news"),
-    backgroundColor: Colors.deepPurple,
-    ),
-
-    body: Column(
-      children: newslist.map((news)=>Newsextract(news)).toList(),
-    ),
-        backgroundColor: Colors.cyan,
-
+          Center(child: Text("Fit&Fine",textScaleFactor: 2.0,style: TextStyle(color: Colors.orange,fontWeight: FontWeight.bold),)),
+        ],
+      ) ,
     );
   }
 }
-
-
-
-
